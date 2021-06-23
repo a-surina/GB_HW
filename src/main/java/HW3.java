@@ -1,5 +1,7 @@
 import java.util.Arrays;
 
+import static java.lang.Math.abs;
+
 public class HW3 {
 
     public static void main(String[] args) {
@@ -86,30 +88,59 @@ public class HW3 {
         [ 3, 5, 6, 1] при n = -2 (на два влево) ->
         [ 6, 1, 3, 5 ].
         При каком n в какую сторону сдвиг можете выбирать сами.*/
-        int[] arrToShift = {1, 2, 3, -9, 14, 0};
+        int[] arrToShift = {1, 2, 3, -9, 14, 0, 8};
         System.out.println("8. Исходный массив");
         System.out.println(Arrays.toString(arrToShift));
         System.out.println("\tСмещённый массив");
-        System.out.println(Arrays.toString(shiftArray(arrToShift, 1)));
+        System.out.println(Arrays.toString(shiftArray(arrToShift, 2)));
+        int[] arrTwoToShift = {5, 104, -8, 0, 24, 17, 1};
+        System.out.println("\tИсходный массив");
+        System.out.println(Arrays.toString(arrTwoToShift));
+        System.out.println("\tСмещённый массив");
+        System.out.println(Arrays.toString(shiftArray(arrTwoToShift, -2)));
+
     }
 
     public static int[] shiftArray(int[] arr, int n) {
-        int cash1 = arr[0];
-        int cash2 = 0;
-        for (int i = 0; i < arr.length - 1; i++) {
-            int j = i;
-            while (j + n < arr.length) {
-                cash1 = arr[j];
-                cash2 = arr[j+n];
-                arr[j+n] = cash1;
-                j++;
+        if (n == 0) {
+            return arr;
+        } else if (n < 0) {
+            n = abs(n);
+            for (int i = 0; i < arr.length / 2; i++) {
+                int buff = arr[i];
+                arr[i] = arr[arr.length - i - 1];
+                arr[arr.length - i - 1] = buff;
             }
-            arr[i] = cash2;
-            cash2 = arr[i+1];
-
+            for (int i = arr.length - n; i < arr.length / 2 + n + 1; i++) {
+                int buff = arr[i];
+                arr[i] = arr[arr.length - 1 - (i - arr.length + n)];
+                arr[arr.length - 1 - (i - arr.length + n)] = buff;
+            }
+            for (int i = 0; i < (arr.length - n) / 2; i++) {
+                int buff = arr[i];
+                arr[i] = arr[arr.length - 1 - n - i];
+                arr[arr.length - 1 - n - i] = buff;
+            }
+        } else {
+            for (int i = 0; i < arr.length / 2; i++) {
+                int buff = arr[i];
+                arr[i] = arr[arr.length - i - 1];
+                arr[arr.length - i - 1] = buff;
+            }
+            for (int i = n; i < arr.length / 2 + n; i++) {
+                int buff = arr[i];
+                arr[i] = arr[arr.length - i + n - 1];
+                arr[arr.length - i + n - 1] = buff;
+            }
+            for (int i = 0; i < n - 1; i++) {
+                int buff = arr[i];
+                arr[i] = arr[n - i - 1];
+                arr[n - i - 1] = buff;
+            }
         }
         return arr;
     }
+
 
     public static int[] oneDimensionalArrCreate(int len, int initialValue) {
         int[] result = new int[len];
@@ -129,7 +160,7 @@ public class HW3 {
 
     public static int[][] twoDimensionalArrCross(int[][] arrToFill, int filling) {
         int beginning = 0;
-        int end = arrToFill.length-1;
+        int end = arrToFill.length - 1;
         for (int i = 0; i < arrToFill.length; i++) {
             arrToFill[i][beginning] = filling;
             arrToFill[i][end] = filling;
@@ -151,8 +182,8 @@ public class HW3 {
 
     public static int maxInSimpleArray(int[] arr) {
         int max = arr[0];
-        for(int elem : arr) {
-            if(max < elem) {
+        for (int elem : arr) {
+            if (max < elem) {
                 max = elem;
             }
         }
@@ -161,8 +192,8 @@ public class HW3 {
 
     public static int minInSimpleArray(int[] arr) {
         int min = arr[0];
-        for(int elem : arr) {
-            if(min > elem) {
+        for (int elem : arr) {
+            if (min > elem) {
                 min = elem;
             }
         }
@@ -173,17 +204,17 @@ public class HW3 {
         for (int i = 0; i < arr.length; i++) {
             int sumLeft = 0;
             int sumRight = 0;
-            if(i > 0) {
+            if (i > 0) {
                 for (int j = 0; j < i; j++) {
                     sumLeft += arr[j];
                 }
             }
-            if(i < arr.length-1) {
+            if (i < arr.length - 1) {
                 for (int k = i; k < arr.length; k++) {
                     sumRight += arr[k];
                 }
             }
-            if (sumLeft == sumRight){
+            if (sumLeft == sumRight) {
                 return true;
             }
         }
