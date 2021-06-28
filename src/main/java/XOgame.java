@@ -2,17 +2,15 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class XOgame {
-    static final int SIZE = 3;
-//    static final int DOTS_TO_WIN = 3;
+    static final int SIZE = 5;
+    static final int DOTS_TO_WIN = 4;
 
     static final char DOT_X = 'X';
     static final char DOT_O = 'O';
     static final char DOT_EMPTY = '.';
-
-    static char[][] map;
-
     static final Scanner sc = new Scanner(System.in);
     static final Random random = new Random();
+    static char[][] map;
 
     public static void main(String[] args) {
         initMap();
@@ -21,7 +19,7 @@ public class XOgame {
         while (true) {
             humanTurn();
             printMap();
-            if (checkWin(DOT_X)) {
+            if (checkWinImproved(DOT_X, DOTS_TO_WIN)) {
                 System.out.println("Вы победили!");
                 break;
             }
@@ -32,7 +30,7 @@ public class XOgame {
 
             aiTurn();
             printMap();
-            if (checkWin(DOT_O)) {
+            if (checkWinImproved(DOT_O, DOTS_TO_WIN)) {
                 System.out.println("Компьютер победил. Сейчас их даже в шахматы не выиграть...");
                 break;
             }
@@ -87,6 +85,8 @@ public class XOgame {
         int x;
         int y;
 
+
+
         do {
             y = random.nextInt(SIZE);
             x = random.nextInt(SIZE);
@@ -114,6 +114,82 @@ public class XOgame {
         return true;
     }
 
+    public static boolean checkDiagonallyBeginning(char c, int dotsToWin) {
+        int dots = 0;
+        int beginning = 0;
+        for (int i = 0; i < SIZE; i++) {
+            if ((map[i][beginning] == c && i == 0) || (map[i][beginning] == c && dots == 0) || (map[i][beginning] == c && map[i-1][beginning-1] == c)) {
+                dots++;
+            } else {
+                dots = 0;
+            }
+            beginning++;
+            if (dots >= dotsToWin) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkDiagonallyEnd(char c, int dotsToWin) {
+        int dots = 0;
+        int end = SIZE - 1;
+        for (int i = 0; i < SIZE; i++) {
+            if ((map[i][end] == c && i == 0) || (map[i][end] == c && dots == 0) || (map[i][end] == c && map[i-1][end+1] == c)) {
+                dots++;
+            } else {
+                dots = 0;
+            }
+            end--;
+            if (dots >= dotsToWin) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkHorizontally(char c, int dotsToWin) {
+        int dots;
+        for (int i = 0; i < SIZE; i++) {
+            dots = 0;
+            for (int j = 0; j < SIZE; j++) {
+                if ((map[i][j] == c && j == 0) || (map[i][j] == c && dots == 0) || (map[i][j] == c && map[i][j-1] == c)) {
+                    dots++;
+                } else {
+                    dots = 0;
+                }
+                if (dots >= dotsToWin) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public static boolean checkVertically(char c, int dotsToWin) {
+        int dots;
+        for (int j = 0; j < SIZE; j++) {
+            dots = 0;
+            for (int i = 0; i < SIZE; i++) {
+                if ((map[i][j] == c && i == 0)|| (map[i][j] == c && dots == 0) || (map[i][j] == c && map[i-1][j] == c)) {
+                    dots++;
+                } else {
+                dots = 0;
+                }
+                if (dots >= dotsToWin) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public static boolean checkWinImproved(char c, int dotsToWin) {
+        return (checkHorizontally(c, dotsToWin) || checkVertically(c, dotsToWin) || checkDiagonallyBeginning(c, dotsToWin) || checkDiagonallyEnd(c, dotsToWin));
+    }
+
     public static boolean checkWin(char c) {
         if (map[0][0] == c && map[0][1] == c && map[0][2] == c) {
             return true;
@@ -138,11 +214,7 @@ public class XOgame {
         if (map[0][0] == c && map[1][1] == c && map[2][2] == c) {
             return true;
         }
-        if (map[0][2] == c && map[1][1] == c && map[2][0] == c) {
-            return true;
-        }
-
-        return false;
+        return map[0][2] == c && map[1][1] == c && map[2][0] == c;
     }
 
 }
