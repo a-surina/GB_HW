@@ -6,12 +6,16 @@ public class Animal {
     public int limitRunning;
     public int limitSwimming;
     public String type;
+    public int appetite;
+    boolean full;
 
     public Animal() {
         this.name = generateName();
         this.limitRunning = 100;
         this.limitSwimming = 5;
         this.type = "Animal";
+        this.appetite = 0;
+        this.full = false;
     }
 
     public void run(int length) {
